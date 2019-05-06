@@ -8,51 +8,60 @@ const rover = {
 };
 // ======================
 
-let ctx; //canvas context
-window.addEventListener("load", () => {
-  ctx= document.createElement("canvas");
-  ctx.innerHTML = "This browser does not support canvas!";
-  ctx.id = "myCanvas";
-  document.getElementsByTagName("BODY")[0].appendChild(ctx);
-  ctx=document.getElementById("myCanvas").getContext("2d");
-  ctx.canvas.width = "500";
-  ctx.canvas.height = "500";
-  ctx.fillStyle="white";
-  ctx.fillRect (0,0,500,500);
-});
-
 let grid = new Array(10);
-
-let command = "";
 const compass = "NESW"; //Clockwise
 
-command = prompt(
-  "Please introduce a valid command list to move the rover (Allowed commands F (Forward), B (Backward), R(Right) and L(Left)."
-).toUpperCase();
+//Iniatializacion grid
 
-console.log(command);
-
-for (var l = 0; l < command.length; l++) {
-  switch (command[l]) {
-    case "R":
-      turnRight(rover);
-      break;
-    case "L":
-      turnLeft(rover);
-      break;
-    case "F":
-      moveForward(rover);
-      break;
-    case "B":
-      moveBackward(rover);
-      break;
-    default:
-      console.log("Nothing to do here");
-  }
-  rover.travelLog.push(rover.x, rover.y, rover.direction);
-  console.log(rover.travelLog);
+for (var i = 0; i < grid.length; i++) {
+  grid[i] = new Array(10);
 }
 
+for (var i = 0; i < grid.length; i++) {
+  for (var j = 0; j < grid[i].length; j++) {
+    grid[i][j] = 0;
+  }
+}
+//grid[0][1] = 1;
+//grid[1][0] = 1;
+
+command(
+  prompt(
+    "Please introduce a valid command list to move the rover (Allowed commands F (Forward), B (Backward), R(Right) and L(Left)."
+  ).toUpperCase()
+);
+
+function command(lc) {
+  //lc is list of commands
+  console.log(`This is the List of commands introduce: ${lc}`);
+  for (var l = 0; l < command.length; l++) {
+    switch (command[l]) {
+      case "R" || "L":
+        turnRover();
+        break;
+      case "F" || "B":
+        moveForward(command[l]);
+        break;
+    }
+  }
+}
+
+function turnRover(turn) {
+  //To move Rover turn de Left or Right;
+  if (turn === "R") {
+    turnRight(rover);
+  } else {
+    turnLeft(rover);
+  }
+}
+function moverover(avanceNBackward) {
+  //to make de rover move forward or backward
+  if (avanceNBackward === "F") {
+    moveForward(rover);
+  } else {
+    moveBackward(rover);
+  }
+}
 function turnLeft(rover) {
   let index = compass.indexOf(rover.direction);
 
@@ -87,9 +96,12 @@ function moveForward(rover) {
       {
         if (rover.y == 0) {
           console.log("I'm sorry but I can not get out of the grid");
-        } else {
+          return false;
+        } else if (iCanMove(rover.x, rover.y - 1)) {
           rover.y--;
           console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
         }
       }
       break;
@@ -97,9 +109,12 @@ function moveForward(rover) {
       {
         if (rover.x == 9) {
           console.log("I'm sorry but I can not get out of the grid");
-        } else {
+          return false;
+        } else if (iCanMove(rover.x + 1, rover.y)) {
           rover.x++;
           console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
         }
       }
       break;
@@ -108,9 +123,12 @@ function moveForward(rover) {
       {
         if (rover.y == 9) {
           console.log("I'm sorry but I can not get out of the grid");
-        } else {
+          return false;
+        } else if (iCanMove(rover.x, rover.y + 1)) {
           rover.y++;
           console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
         }
       }
       break;
@@ -119,16 +137,31 @@ function moveForward(rover) {
       {
         if (rover.x == 0) {
           console.log("I'm sorry but I can not get out of the grid");
-        } else {
+          return false;
+        } else if (iCanMove(rover.x - 1, rover.y)) {
           rover.x--;
           console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
         }
       }
       break;
   }
+  rover.travelLog.push(rover.x, rover.y, rover.direction);
+  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
+  console.log(rover.travelLog);
   console.log("moveForward was called");
 }
 
 function moveBackward(rover) {
   console.log("moveBackward was called");
+}
+
+function iCanMove(x, y) {
+  if (grid[y][x] >= 1) {
+    console.log(
+      `Sorry I can not move to next position (${y},${x}) there are an obstacle or other rover!!`
+    );
+    return false;
+  } else return true;
 }
