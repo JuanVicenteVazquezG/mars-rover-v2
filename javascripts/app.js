@@ -33,14 +33,14 @@ command(
 
 function command(lc) {
   //lc is list of commands
-  console.log(`This is the List of commands introduce: ${lc}`);
-  for (var l = 0; l < command.length; l++) {
-    switch (command[l]) {
+  console.log(`This is the List of commands introduced: ${lc}`);
+  for (var l = 0; l < lc.length; l++) {
+    switch (lc[l]) {
       case "R" || "L":
-        turnRover();
+        turnRover(lc[l]);
         break;
       case "F" || "B":
-        moveForward(command[l]);
+        moveRover(lc[l]);
         break;
     }
   }
@@ -54,7 +54,7 @@ function turnRover(turn) {
     turnLeft(rover);
   }
 }
-function moverover(avanceNBackward) {
+function moveRover(avanceNBackward) {
   //to make de rover move forward or backward
   if (avanceNBackward === "F") {
     moveForward(rover);
@@ -63,6 +63,8 @@ function moverover(avanceNBackward) {
   }
 }
 function turnLeft(rover) {
+  
+  console.log(`Rover is facing ${rover.direction} and turns Left`);
   let index = compass.indexOf(rover.direction);
 
   if (index == 0) {
@@ -71,13 +73,13 @@ function turnLeft(rover) {
     index--;
   }
   rover.direction = compass[index];
-
+  console.log(`Rover now is facing ${rover.direction}`);
   console.log("turnLeft was called!");
-  console.log(`New direcction is ${rover.direction}`);
+  
 }
 
 function turnRight(rover) {
-  console.log(rover.direction);
+  console.log(`Rover is facing ${rover.direction} and turns Right`);
   let index = compass.indexOf(rover.direction);
 
   if (index == 3) {
@@ -86,9 +88,9 @@ function turnRight(rover) {
     index++;
   }
   rover.direction = compass[index];
+  console.log(`Rover now is facing ${rover.direction}`);
   console.log("turnRight was called!");
-  console.log(`New direcction is ${rover.direction}`);
-}
+  }
 
 function moveForward(rover) {
   switch (rover.direction) {
@@ -154,6 +156,73 @@ function moveForward(rover) {
 }
 
 function moveBackward(rover) {
+  
+  switch (rover.direction) {
+    case "N": //It wants to go South
+      {
+       
+        if (rover.y == 9) {
+          console.log("I'm sorry but I can not get out of the grid");
+          return false;
+        } else if (iCanMove(rover.x, rover.y + 1)) {
+          rover.y++;
+          console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
+        }
+      }
+       
+       
+      break;
+    case "E": //It wants to go West
+      {
+        if (rover.x == 0) {
+          console.log("I'm sorry but I can not get out of the grid");
+          return false;
+        } else if (iCanMove(rover.x - 1, rover.y)) {
+          rover.x--;
+          console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
+        }
+      }
+      break;
+
+    case "S": //It wants to go North
+      {
+        if (rover.y == 0) {
+          console.log("I'm sorry but I can not get out of the grid");
+          return false;
+        } else if (iCanMove(rover.x, rover.y - 1)) {
+          rover.y--;
+          console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
+        }
+      }
+        
+        
+      break;
+
+    case "W": //It wans to go
+      {
+        if (rover.x == 9) {
+          console.log("I'm sorry but I can not get out of the grid");
+          return false;
+        } else if (iCanMove(rover.x + 1, rover.y)) {
+          rover.x++;
+          console.log(`New position of rover is ${rover.x},${rover.y}`);
+        } else {
+          return false;
+        }
+      }
+
+       
+      break;
+  }
+  rover.travelLog.push(rover.x, rover.y, rover.direction);
+  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
+  console.log(rover.travelLog);
   console.log("moveBackward was called");
 }
 
