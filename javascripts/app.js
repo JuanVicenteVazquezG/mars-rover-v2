@@ -11,7 +11,7 @@ const rover = {
 let grid = new Array(10);
 const compass = "NESW"; //Clockwise
 
-//Iniatializacion grid
+
 
 for (var i = 0; i < grid.length; i++) {
   grid[i] = new Array(10);
@@ -22,8 +22,9 @@ for (var i = 0; i < grid.length; i++) {
     grid[i][j] = 0;
   }
 }
-//grid[0][1] = 1;
-//grid[1][0] = 1;
+
+obstacle (4);//Numbers of obstacles created ramdomly
+
 
 rover.travelLog.push(rover.x, rover.y, rover.direction);
 
@@ -36,23 +37,27 @@ command(
 function command(lc) {
   //lc is list of commands
   console.log(`This is the List of commands introduced: ${lc}`);
-  for (var l = 0; l < lc.length; l++) {
-    switch (lc[l]) {
+  for (var i = 0; i < lc.length; i++) {
+
+    if (lc[i] ==="R" || lc[i] ==="F" || lc[i] ==="L" || lc[i] ==="B"){
+    switch (lc[i]) {
       case "R":
-        turnRover(lc[l]);
+        turnRover(lc[i]);
         break;
       case "L":
-        turnRover(lc[l]);
+        turnRover(lc[i]);
         break;
       case "F":
-        moveRover(lc[l]);
+        moveRover(lc[i]);
         break;
       case "B":
-        moveRover(lc[l]);
+        moveRover(lc[i]);
         break;
     }
     rover.travelLog.push(rover.x, rover.y, rover.direction);
     console.log(rover.travelLog);
+  }
+  
   }
   
 }
@@ -223,8 +228,7 @@ function moveForward(rover) {
 }
 
 function moveBackward(rover) {
- 
-  console.log("moveBackward was called");
+ console.log("moveBackward was called");
 }
 
 function iCanMove(x, y) {
@@ -234,4 +238,18 @@ function iCanMove(x, y) {
     );
     return false;
   } else return true;
+}
+
+function obstacleGenerator(number)
+{
+  let x=0;
+  let y=0;
+  grid[x][y]=2; //Number represents our rover
+  for (var i=0; i<number.length;i++){
+    while (grid[x][y]>0){
+    x=Math.floor (Math.random()*10);
+    y=Math.floor (Math.random()*10);
+    }
+    grid[x][y]=1;
+  }
 }
