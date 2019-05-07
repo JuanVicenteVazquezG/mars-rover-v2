@@ -1,31 +1,26 @@
-﻿// Rover Object Goes Here
+﻿﻿// Rover Object Goes Here
 // ======================
 const rover = {
-  direction: "N", //The direction property can contain one of four values: "N", "S", "E", or "W". The rover’s
-  x: 0,
+
+  direction:"N", //The direction property can contain one of four values: "N", "S", "E", or "W". The rover’s
+  x:0,
   y: 0,
   travelLog: []
 };
 // ======================
 
-let grid = new Array(10);
+let grid=new Array(10);
+console.log(grid);
+let rovers=[];
 const compass = "NESW"; //Clockwise
+let maxObstacleNumber=4;
 
 
 
-for (var i = 0; i < grid.length; i++) {
-  grid[i] = new Array(10);
-}
 
-for (var i = 0; i < grid.length; i++) {
-  for (var j = 0; j < grid[i].length; j++) {
-    grid[i][j] = 0;
-  }
-}
-
-obstacle (4);//Numbers of obstacles created ramdomly
-
-
+initGrid (grid);
+roverGenerator (4);
+console.log (grid);
 rover.travelLog.push(rover.x, rover.y, rover.direction);
 
 command(
@@ -37,7 +32,7 @@ command(
 function command(lc) {
   //lc is list of commands
   console.log(`This is the List of commands introduced: ${lc}`);
-  for (var i = 0; i < lc.length; i++) {
+  for (let i = 0; i < lc.length; i++) {
 
     if (lc[i] ==="R" || lc[i] ==="F" || lc[i] ==="L" || lc[i] ==="B"){
     switch (lc[i]) {
@@ -57,11 +52,10 @@ function command(lc) {
     rover.travelLog.push(rover.x, rover.y, rover.direction);
     console.log(rover.travelLog);
   }
-  
-  }
-  
-}
 
+  }
+
+}
 function turnRover(turn) {
   //To move Rover turn de Left or Right;
   if (turn === "R") {
@@ -184,7 +178,7 @@ function moveRover(forwardNBackward) {
       }
       break;
   }
-  
+
   grid[copyX][copyY] = 0; //Left this position; 0 means there aren't nothing in this position
   grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
 
@@ -194,6 +188,7 @@ function moveRover(forwardNBackward) {
     moveBackward(rover);
   }
 }
+
 function turnLeft(rover) {
   console.log(`Rover is facing ${rover.direction} and turns Left`);
   let index = compass.indexOf(rover.direction);
@@ -205,10 +200,9 @@ function turnLeft(rover) {
   }
   rover.direction = compass[index];
   console.log(`Rover now is facing ${rover.direction}`);
-  
+
   console.log("turnLeft was called!");
 }
-
 function turnRight(rover) {
   console.log(`Rover is facing ${rover.direction} and turns Right`);
   let index = compass.indexOf(rover.direction);
@@ -222,11 +216,9 @@ function turnRight(rover) {
   console.log(`Rover now is facing ${rover.direction}`);
   console.log("turnRight was called!");
 }
-
 function moveForward(rover) {
  console.log("moveForward was called");
 }
-
 function moveBackward(rover) {
  console.log("moveBackward was called");
 }
@@ -239,17 +231,53 @@ function iCanMove(x, y) {
     return false;
   } else return true;
 }
+function initGrid (grid){
 
-function obstacleGenerator(number)
-{
+  for (var i = 0; i < grid.length; i++) {
+    grid[i] = new Array(10);
+  }
+for (var i = 0; i < grid.length; i++) {
+    for (var j = 0; j < grid[i].length; j++) {
+      grid[i][j] = 0;
+    }
+  }
+
+obstacleGenerator(maxObstacleNumber);//Numbers of obstacles created ramdomly
+}
+
+function obstacleGenerator(number){
   let x=0;
   let y=0;
-  grid[x][y]=2; //Number represents our rover
-  for (var i=0; i<number.length;i++){
-    while (grid[x][y]>0){
+  grid[y][x]=2; //This number represents our rover
+  console.log (grid);
+  for (let i=0; i<=number;i++){
+  
+    do{
+      x=Math.floor (Math.random()*10);
+      y=Math.floor (Math.random()*10);
+    } while (grid[y][x]>0);
+    grid[y][x]=1;//This numbe represent obstacles
+  }
+  console.log (grid);
+}
+
+
+function roverGenerator (number){
+  let x;
+  let y;
+  let direction
+  for (let i=0; i<number;i++)
+  {
+    do{
     x=Math.floor (Math.random()*10);
     y=Math.floor (Math.random()*10);
-    }
-    grid[x][y]=1;
+    direction=compass[Math.floor (Math.random()*4)];
+  } while (grid[y][x]>0);
+    grid[y][x]=i+3;
+    rovers.push (Object.create(rover));
+    rovers[i].x=x;
+    rovers[i].y=y;
+    rovers[i].direction=direction;
   }
+  
 }
