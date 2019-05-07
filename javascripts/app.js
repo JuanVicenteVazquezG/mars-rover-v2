@@ -25,6 +25,8 @@ for (var i = 0; i < grid.length; i++) {
 //grid[0][1] = 1;
 //grid[1][0] = 1;
 
+rover.travelLog.push(rover.x, rover.y, rover.direction);
+
 command(
   prompt(
     "Please introduce a valid command list to move the rover (Allowed commands F (Forward), B (Backward), R(Right) and L(Left)."
@@ -36,14 +38,23 @@ function command(lc) {
   console.log(`This is the List of commands introduced: ${lc}`);
   for (var l = 0; l < lc.length; l++) {
     switch (lc[l]) {
-      case "R" || "L":
+      case "R":
         turnRover(lc[l]);
         break;
-      case "F" || "B":
+      case "L":
+        turnRover(lc[l]);
+        break;
+      case "F":
+        moveRover(lc[l]);
+        break;
+      case "B":
         moveRover(lc[l]);
         break;
     }
+    rover.travelLog.push(rover.x, rover.y, rover.direction);
+    console.log(rover.travelLog);
   }
+  
 }
 
 function turnRover(turn) {
@@ -54,16 +65,131 @@ function turnRover(turn) {
     turnLeft(rover);
   }
 }
-function moveRover(avanceNBackward) {
-  //to make de rover move forward or backward
-  if (avanceNBackward === "F") {
+function moveRover(forwardNBackward) {
+  let copyX = rover.x;
+  let copyY = rover.y;
+  console.log(forwardNBackward);
+  switch (rover.direction) {
+    case "N":
+      {
+        if (
+          (rover.y === 0 && forwardNBackward === "F") ||
+          (rover.y === 9 && forwardNBackward === "B")
+        ) {
+          {
+            console.log("I'm sorry but I can not get out of the grid");
+            return false;
+          }
+        } else if (forwardNBackward === "F") {
+          if (iCanMove(rover.x, rover.y - 1)) {
+            rover.y--;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        } else if (forwardNBackward === "B") {
+          if (iCanMove(rover.x, rover.y + 1)) {
+            rover.y++;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        }
+      }
+      break;
+    case "E":
+      {
+        if (
+          (rover.x === 9 && forwardNBackward === "F") ||
+          (rover.x === 0 && forwardNBackward === "B")
+        ) {
+          {
+            console.log("I'm sorry but I can not get out of the grid");
+            return false;
+          }
+        } else if (forwardNBackward === "F") {
+          if (iCanMove(rover.x + 1, rover.y)) {
+            rover.x++;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        } else if (forwardNBackward === "B") {
+          if (iCanMove(rover.x - 1, rover.y)) {
+            rover.x--;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        }
+      }
+      break;
+    case "S":
+      {
+        if (
+          (rover.y === 9 && forwardNBackward === "F") ||
+          (rover.y === 0 && forwardNBackward === "B")
+        ) {
+          {
+            console.log("I'm sorry but I can not get out of the grid");
+            return false;
+          }
+        } else if (forwardNBackward === "F") {
+          if (iCanMove(rover.x, rover.y + 1)) {
+            rover.y++;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        } else if (forwardNBackward === "B") {
+          if (iCanMove(rover.x, rover.y - 1)) {
+            rover.y--;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        }
+      }
+      break;
+    case "w":
+      {
+        if (
+          (rover.x === 0 && forwardNBackward === "F") ||
+          (rover.x === 9 && forwardNBackward === "B")
+        ) {
+          {
+            console.log("I'm sorry but I can not get out of the grid");
+            return false;
+          }
+        } else if (forwardNBackward === "F") {
+          if (iCanMove(rover.x - 1, rover.y)) {
+            rover.x--;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        } else if (forwardNBackward === "B") {
+          if (iCanMove(rover.x + 1, rover.y)) {
+            rover.x++;
+            console.log(`New position of rover is ${rover.x},${rover.y}`);
+          } else {
+            return false;
+          }
+        }
+      }
+      break;
+  }
+  
+  grid[copyX][copyY] = 0; //Left this position; 0 means there aren't nothing in this position
+  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
+
+  if (forwardNBackward === "F") {
     moveForward(rover);
   } else {
     moveBackward(rover);
   }
 }
 function turnLeft(rover) {
-  
   console.log(`Rover is facing ${rover.direction} and turns Left`);
   let index = compass.indexOf(rover.direction);
 
@@ -74,8 +200,8 @@ function turnLeft(rover) {
   }
   rover.direction = compass[index];
   console.log(`Rover now is facing ${rover.direction}`);
-  console.log("turnLeft was called!");
   
+  console.log("turnLeft was called!");
 }
 
 function turnRight(rover) {
@@ -90,139 +216,14 @@ function turnRight(rover) {
   rover.direction = compass[index];
   console.log(`Rover now is facing ${rover.direction}`);
   console.log("turnRight was called!");
-  }
+}
 
 function moveForward(rover) {
-  switch (rover.direction) {
-    case "N":
-      {
-        if (rover.y == 0) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x, rover.y - 1)) {
-          rover.y--;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-      break;
-    case "E":
-      {
-        if (rover.x == 9) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x + 1, rover.y)) {
-          rover.x++;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-      break;
-
-    case "S":
-      {
-        if (rover.y == 9) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x, rover.y + 1)) {
-          rover.y++;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-      break;
-
-    case "W":
-      {
-        if (rover.x == 0) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x - 1, rover.y)) {
-          rover.x--;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-      break;
-  }
-  rover.travelLog.push(rover.x, rover.y, rover.direction);
-  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
-  console.log(rover.travelLog);
-  console.log("moveForward was called");
+ console.log("moveForward was called");
 }
 
 function moveBackward(rover) {
-  
-  switch (rover.direction) {
-    case "N": //It wants to go South
-      {
-       
-        if (rover.y == 9) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x, rover.y + 1)) {
-          rover.y++;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-       
-       
-      break;
-    case "E": //It wants to go West
-      {
-        if (rover.x == 0) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x - 1, rover.y)) {
-          rover.x--;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-      break;
-
-    case "S": //It wants to go North
-      {
-        if (rover.y == 0) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x, rover.y - 1)) {
-          rover.y--;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-        
-        
-      break;
-
-    case "W": //It wans to go
-      {
-        if (rover.x == 9) {
-          console.log("I'm sorry but I can not get out of the grid");
-          return false;
-        } else if (iCanMove(rover.x + 1, rover.y)) {
-          rover.x++;
-          console.log(`New position of rover is ${rover.x},${rover.y}`);
-        } else {
-          return false;
-        }
-      }
-
-       
-      break;
-  }
-  rover.travelLog.push(rover.x, rover.y, rover.direction);
-  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
-  console.log(rover.travelLog);
+ 
   console.log("moveBackward was called");
 }
 
