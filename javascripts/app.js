@@ -47,9 +47,10 @@ function command(lc) {
           break;
       }
       rover.travelLog.push(rover.x, rover.y, rover.direction);
-      console.log(rover.travelLog);
+      
     }
   }
+  printTravelLog (rover);
 }
 function turnRover(turn) {
   //To move Rover turn de Left or Right;
@@ -220,12 +221,16 @@ function moveBackward(rover) {
 }
 
 function iCanMove(x, y) {
-  if (grid[y][x] >= 1) {
-    console.log(
-      `Sorry I can not move to next position (${y},${x}) there are an obstacle or other rover!!`
-    );
-    return false;
-  } else return true;
+  switch (grid[y][x])
+  {
+    case 0:{return true}break;//I don't know if is needed this last "break"
+    case 1:{console.log(`Sorry I can't move to this position (${x},${y})  because I have found an obstacle`); return false;}break;
+    case 2:{console.log(`Sorry I can't move to this position (${x},${y})  because I have found the mars-rover`); return false;}break;
+    case 3:{console.log(`Sorry I can't move to this position (${x},${y})  because I have found the rover number 2`); return false;}break;
+    case 4:{console.log(`Sorry I can't move to this position (${x},${y})  because I have found the rover number 3`); return false;}break;
+    case 5:{console.log(`Sorry I can't move to this position (${x},${y})  because I have found the rover number 4`); return false;}break;
+    case 6:{console.log(`Sorry I can't move to this position (${x},${y})  because I have found the rover number 5`); return false;}break;
+  }
 }
 
 function initGrid () {
@@ -269,5 +274,18 @@ function roverGenerator(number) {
     rovers[i].x = x;
     rovers[i].y = y;
     rovers[i].direction = direction;
+  }
+}
+
+function movementRovers(roverMars){ //This movements are random
+
+}
+
+function printTravelLog(roverMars)
+{
+  console.log ('This is the Travel Log of ...')
+  while (i<roverMars.travelLog.length)
+  {
+    
   }
 }
