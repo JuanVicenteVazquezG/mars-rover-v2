@@ -1,26 +1,24 @@
 ﻿﻿// Rover Object Goes Here
 // ======================
 const rover = {
-
-  direction:"N", //The direction property can contain one of four values: "N", "S", "E", or "W". The rover’s
-  x:0,
+  direction: "N", //The direction property can contain one of four values: "N", "S", "E", or "W". The rover’s
+  x: 0,
   y: 0,
   travelLog: []
 };
 // ======================
 
-let grid=new Array(10);
+let grid=new Array (10);
 console.log(grid);
-let rovers=[];
+let rovers = [];
 const compass = "NESW"; //Clockwise
-let maxObstacleNumber=4;
+let maxObstacleNumber = 4;
+initGrid();
+grid[rover.y][rover.x] = 2; //This number represents our rover. Put our rover on the grid
 
+console.log(grid);
+roverGenerator(4);
 
-
-
-initGrid (grid);
-roverGenerator (4);
-console.log (grid);
 rover.travelLog.push(rover.x, rover.y, rover.direction);
 
 command(
@@ -33,28 +31,25 @@ function command(lc) {
   //lc is list of commands
   console.log(`This is the List of commands introduced: ${lc}`);
   for (let i = 0; i < lc.length; i++) {
-
-    if (lc[i] ==="R" || lc[i] ==="F" || lc[i] ==="L" || lc[i] ==="B"){
-    switch (lc[i]) {
-      case "R":
-        turnRover(lc[i]);
-        break;
-      case "L":
-        turnRover(lc[i]);
-        break;
-      case "F":
-        moveRover(lc[i]);
-        break;
-      case "B":
-        moveRover(lc[i]);
-        break;
+    if (lc[i] === "R" || lc[i] === "F" || lc[i] === "L" || lc[i] === "B") {
+      switch (lc[i]) {
+        case "R":
+          turnRover(lc[i]);
+          break;
+        case "L":
+          turnRover(lc[i]);
+          break;
+        case "F":
+          moveRover(lc[i]);
+          break;
+        case "B":
+          moveRover(lc[i]);
+          break;
+      }
+      rover.travelLog.push(rover.x, rover.y, rover.direction);
+      console.log(rover.travelLog);
     }
-    rover.travelLog.push(rover.x, rover.y, rover.direction);
-    console.log(rover.travelLog);
   }
-
-  }
-
 }
 function turnRover(turn) {
   //To move Rover turn de Left or Right;
@@ -67,7 +62,7 @@ function turnRover(turn) {
 function moveRover(forwardNBackward) {
   let copyX = rover.x;
   let copyY = rover.y;
-  console.log(forwardNBackward);
+  
   switch (rover.direction) {
     case "N":
       {
@@ -179,14 +174,15 @@ function moveRover(forwardNBackward) {
       break;
   }
 
-  grid[copyX][copyY] = 0; //Left this position; 0 means there aren't nothing in this position
-  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
-
+  
   if (forwardNBackward === "F") {
     moveForward(rover);
   } else {
     moveBackward(rover);
   }
+  grid[copyY][copyX] = 0; //Left this position; 0 means there aren't nothing in this position
+  grid[rover.y][rover.x] = 2; //number 2 is de intern name of rover  because others rovers have other number 0 no obstacle 1 a obstacle 2 first rover 3 other rover ....
+
 }
 
 function turnLeft(rover) {
@@ -217,10 +213,10 @@ function turnRight(rover) {
   console.log("turnRight was called!");
 }
 function moveForward(rover) {
- console.log("moveForward was called");
+  console.log("moveForward was called");
 }
 function moveBackward(rover) {
- console.log("moveBackward was called");
+  console.log("moveBackward was called");
 }
 
 function iCanMove(x, y) {
@@ -231,53 +227,47 @@ function iCanMove(x, y) {
     return false;
   } else return true;
 }
-function initGrid (grid){
 
+function initGrid () {
+ 
   for (var i = 0; i < grid.length; i++) {
     grid[i] = new Array(10);
   }
-for (var i = 0; i < grid.length; i++) {
+  for (var i = 0; i < grid.length; i++) {
     for (var j = 0; j < grid[i].length; j++) {
       grid[i][j] = 0;
     }
   }
-
-obstacleGenerator(maxObstacleNumber);//Numbers of obstacles created ramdomly
+   
+  obstacleGenerator(maxObstacleNumber); //Numbers of obstacles created ramdomly
 }
 
-function obstacleGenerator(number){
-  let x=0;
-  let y=0;
-  grid[y][x]=2; //This number represents our rover
-  console.log (grid);
-  for (let i=0; i<=number;i++){
-  
-    do{
-      x=Math.floor (Math.random()*10);
-      y=Math.floor (Math.random()*10);
-    } while (grid[y][x]>0);
-    grid[y][x]=1;//This numbe represent obstacles
+function obstacleGenerator(number) {
+  let x = 0;
+  let y = 0;
+  for (let i = 0; i <= number; i++) {
+    do {
+      x = Math.floor(Math.random() * 10);
+      y = Math.floor(Math.random() * 10);
+    } while (grid[y][x] > 0);
+    grid[y][x] = 1; //This number represent obstacles
   }
-  console.log (grid);
 }
 
-
-function roverGenerator (number){
+function roverGenerator(number) {
   let x;
   let y;
-  let direction
-  for (let i=0; i<number;i++)
-  {
-    do{
-    x=Math.floor (Math.random()*10);
-    y=Math.floor (Math.random()*10);
-    direction=compass[Math.floor (Math.random()*4)];
-  } while (grid[y][x]>0);
-    grid[y][x]=i+3;
-    rovers.push (Object.create(rover));
-    rovers[i].x=x;
-    rovers[i].y=y;
-    rovers[i].direction=direction;
+  let direction;
+  for (let i = 0; i < number; i++) {
+    do {
+      x = Math.floor(Math.random() * 10);
+      y = Math.floor(Math.random() * 10);
+      direction = compass[Math.floor(Math.random() * 4)];
+    } while (grid[y][x] > 0);
+    grid[y][x] = i + 3;
+    rovers.push(Object.create(rover));
+    rovers[i].x = x;
+    rovers[i].y = y;
+    rovers[i].direction = direction;
   }
-  
 }
